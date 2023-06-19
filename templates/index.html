@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat with AI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #chatbox {
+            margin-top: 20px;
+            height: 300px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: scroll;
+        }
+        #userInput {
+            margin-top: 20px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat with AI</h1>
+    <div id="chatbox">
+        <!-- Chat messages will be added here -->
+    </div>
+    <form id="messageForm" action="/send_message" method="post">
+        <input id="userInput" type="text" name="human_input" placeholder="Type your message here..." required>
+        <button type="submit">Send</button>
+    </form>
+
+    <script>
+        const form = document.getElementById('messageForm');
+        const chatbox = document.getElementById('chatbox');
+    
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+    
+            const userInput = document.getElementById('userInput');
+            const message = userInput.value;
+            userInput.value = '';
+    
+            chatbox.innerHTML += `<p>You: ${message}</p>`;
+    
+            fetch('/send_message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 'human_input': message })
+            })
+            .then(response => response.text())
+            .then(response => {
+                chatbox.innerHTML += `<p>Alisa: ${response}</p>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+            });
+        });
+    </script>
+    
+    
+</body>
+</html>
